@@ -27,6 +27,17 @@ enum APIConfiguration {
         #endif
     }
 
+    /// Joins an API path to `baseURL`. Leading slashes are stripped so `/auth/login` does not
+    /// replace the `/api/v1` prefix (Foundation treats `/…` as host-root-relative).
+    static func url(forPath path: String) -> URL? {
+        var trimmed = path.trimmingCharacters(in: .whitespacesAndNewlines)
+        while trimmed.hasPrefix("/") {
+            trimmed.removeFirst()
+        }
+        guard !trimmed.isEmpty else { return baseURL }
+        return baseURL.appending(path: trimmed)
+    }
+
     static var trackingSocketURL: URL? {
         guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
             return nil

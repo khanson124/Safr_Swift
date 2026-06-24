@@ -393,7 +393,7 @@ struct APIClient {
         decoder: JSONDecoder? = nil
     ) async throws -> Response {
         let boundary = "Boundary-\(UUID().uuidString)"
-        guard let url = URL(string: path, relativeTo: APIConfiguration.baseURL) else {
+        guard let url = APIConfiguration.url(forPath: path) else {
             throw APIError(message: "Invalid API path: \(path)")
         }
 
@@ -474,7 +474,7 @@ struct APIClient {
         body: Body?,
         token: String?
     ) async throws -> Data {
-        guard let url = URL(string: path, relativeTo: APIConfiguration.baseURL) else {
+        guard let url = APIConfiguration.url(forPath: path) else {
             throw APIError(message: "Invalid API path: \(path)")
         }
 
