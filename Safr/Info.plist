@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.kylehanson196.safr.dev</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>safr</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Google Sign-In</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.YOUR_REVERSED_CLIENT_ID</string>
+			</array>
+		</dict>
+	</array>
+	<key>GIDClientID</key>
+	<string>YOUR_GOOGLE_IOS_CLIENT_ID.apps.googleusercontent.com</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Safr uses your camera to scan taxi QR codes before boarding and to capture profile and safety evidence photos.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Safr uses your location during active trips so riders and drivers can share live journey progress and safety alerts.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Safr uses your photo library to choose a profile photo, driver documents, and optional safety report evidence.</string>
+	<key>SAFR_API_BASE_URL</key>
+	<string></string>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchBackground</string>
+	</dict>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+</dict>
+</plist>
