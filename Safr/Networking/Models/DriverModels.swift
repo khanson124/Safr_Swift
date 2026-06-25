@@ -140,8 +140,6 @@ struct DeleteEmergencyContactResponse: Codable {
 struct ManualStartTripRequest: Encodable {
     let tripType: TripType
     let startedFrom: TripStartedFrom
-    var originAddress: String?
-    var destinationAddress: String?
     var passengerCount: Int?
     var notes: String?
 }

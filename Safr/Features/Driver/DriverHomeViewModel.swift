@@ -19,8 +19,7 @@ final class DriverHomeViewModel {
     var isStartingTrip = false
     var isEndingTrip = false
     var isManualStarting = false
-    var originAddress = ""
-    var destinationAddress = ""
+    var manualStartNotes = ""
 
     private var pollTask: Task<Void, Never>?
 
@@ -62,22 +61,32 @@ final class DriverHomeViewModel {
         preferences = DriverPreferencesStore.load(userId: userId)
 
         do {
-            async let profileTask = APIClient.shared.getMyDriverProfile(token: token)
-            async let passengersTask = APIClient.shared.listActivePassengers(token: token)
-            async let tripsTask = APIClient.shared.listTrips(token: token)
-
-            let qr = try? await APIClient.shared.getMyDriverQr(token: token)
-            let (profile, passengers, trips) = try await (profileTask, passengersTask, tripsTask)
-
+            let profile = try await APIClient.shared.getMyDriverProfile(token: token)
             driverProfile = profile
-            driverQr = qr
+            errorMessage = nil
+        } catch let error as APIError {
+            if !silent { errorMessage = error.message }
+            return
+        } catch {
+            if !silent { errorMessage = error.localizedDescription }
+            return
+        }
+
+        async let passengersTask = APIClient.shared.listActivePassengers(token: token)
+        async let tripsTask = APIClient.shared.listTrips(token: token)
+
+        let qr = try? await APIClient.shared.getMyDriverQr(token: token)
+        driverQr = qr
+
+        do {
+            let (passengers, trips) = try await (passengersTask, tripsTask)
             activePassengers = passengers
             assignedTrips = trips
             errorMessage = nil
         } catch let error as APIError {
-            if !silent { errorMessage = error.message }
+            errorMessage = error.message
         } catch {
-            if !silent { errorMessage = error.localizedDescription }
+            errorMessage = error.localizedDescription
         }
     }
 
@@ -147,17 +156,13 @@ final class DriverHomeViewModel {
         defer { isManualStarting = false }
 
         do {
+            let trimmedNotes = manualStartNotes.trimmingCharacters(in: .whitespacesAndNewlines)
             let trip = try await APIClient.shared.manualStartTrip(
                 token: token,
                 request: ManualStartTripRequest(
                     tripType: .shared,
                     startedFrom: .roadside,
-                    originAddress: originAddress.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                        ? nil
-                        : originAddress.trimmingCharacters(in: .whitespacesAndNewlines),
-                    destinationAddress: destinationAddress.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                        ? nil
-                        : destinationAddress.trimmingCharacters(in: .whitespacesAndNewlines)
+                    notes: trimmedNotes.isEmpty ? nil : trimmedNotes
                 )
             )
             await load(session: session, silent: true)
@@ -173,5 +178,14 @@ final class DriverHomeViewModel {
 
     func tripLabel(_ trip: Trip) -> String {
         trip.routeSnapshot ?? "\(trip.originAddress) to \(trip.destinationAddress)"
+    }
+
+    var registeredRouteLabel: String? {
+        guard let profile = driverProfile else { return nil }
+        if let route = profile.serviceRoute, !route.isEmpty { return route }
+        if let origin = profile.originArea, let destination = profile.destinationArea {
+            return "\(origin) to \(destination)"
+        }
+        return profile.originArea ?? profile.destinationArea
     }
 }

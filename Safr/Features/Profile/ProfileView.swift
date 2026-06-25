@@ -27,11 +27,15 @@ struct ProfileView: View {
                             .font(.title2.bold())
                             .foregroundStyle(SafrTheme.Colors.textPrimary)
 
-                        Text(user.email)
-                            .foregroundStyle(SafrTheme.Colors.textSecondary)
+                        if let email = user.email {
+                            Text(email)
+                                .foregroundStyle(SafrTheme.Colors.textSecondary)
+                        }
 
-                        Text(user.phoneNumber)
-                            .foregroundStyle(SafrTheme.Colors.textSecondary)
+                        if let phoneNumber = user.phoneNumber {
+                            Text(phoneNumber)
+                                .foregroundStyle(SafrTheme.Colors.textSecondary)
+                        }
 
                         RoleBadge(role: user.role)
                             .padding(.top, SafrTheme.Spacing.sm)

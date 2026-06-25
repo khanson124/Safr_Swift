@@ -263,8 +263,17 @@ struct DriverHomeView: View {
                 .font(.subheadline)
                 .foregroundStyle(SafrTheme.Colors.textSecondary)
 
-            SafrTextField(title: "Origin (optional)", text: $viewModel.originAddress)
-            SafrTextField(title: "Destination (optional)", text: $viewModel.destinationAddress)
+            if let route = viewModel.registeredRouteLabel {
+                Text("Route on file: \(route)")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(SafrTheme.Colors.textPrimary)
+            } else {
+                Text("Safr uses your registered driver route for this trip.")
+                    .font(.caption)
+                    .foregroundStyle(SafrTheme.Colors.textSecondary)
+            }
+
+            SafrTextField(title: "Notes (optional)", text: $viewModel.manualStartNotes)
 
             SafrPrimaryButton(title: "Start monitored ride", isLoading: viewModel.isManualStarting) {
                 Task {

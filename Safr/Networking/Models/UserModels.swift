@@ -47,9 +47,11 @@ enum DriverApprovalStatus: String, Codable {
 
 struct AuthUser: Codable, Equatable {
     let id: String
-    let email: String
+    /// Omitted on nested trip/driver payloads; always present on login and `/auth/me`.
+    var email: String?
     let fullName: String
-    let phoneNumber: String
+    /// Omitted on nested trip/driver payloads; always present on login and `/auth/me`.
+    var phoneNumber: String?
     let role: UserRole
     var avatarUrl: String?
     var approvalStatus: DriverApprovalStatus?
